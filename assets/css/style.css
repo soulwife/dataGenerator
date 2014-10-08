@@ -1,0 +1,4 @@
+.table td {
+    word-break: break-all;
+    min-width: 95px;
+}

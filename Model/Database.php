@@ -11,18 +11,18 @@ class Database {
 
     private $connection = null;
     public static $columns = [
-        'COLUMN_NAME',
-        'COLUMN_TYPE', 
-        'COLUMN_KEY', 
+        'NAME',
+        'TYPE', 
+        'KEY', 
         'EXTRA', 
-        'IS_NULLABLE', 
-        'DATA_TYPE', 
-        'CHARACTER_MAXIMUM_LENGTH', 
-        'NUMERIC_PRECISION', 
-        'NUMERIC_SCALE', 
-        'CHARACTER_SET_NAME', 
-        'COLLATION_NAME', 
-        'COLUMN_COMMENT'
+        'IS NULLABLE', 
+        'DATA TYPE', 
+        'CHARACTER MAXIMUM LENGTH', 
+        'NUMERIC PRECISION', 
+        'NUMERIC SCALE', 
+        'CHARACTER SET NAME', 
+        'COLLATION NAME', 
+        'COLUMN COMMENT'
         ];
     public function __construct($dbHost, $dbName, $dbUser, $dbPass) {
         try { 

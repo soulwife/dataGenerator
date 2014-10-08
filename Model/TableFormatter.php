@@ -16,7 +16,7 @@ class TableFormatter extends HtmlFormatter {
     }
     
     public function createTable() {
-	$table = "<table>";
+	$table = "<table class='table table-bordered table-hover table-striped'>";
         $table .= $this->wrapElementToHtml("thead", $this->createHeader());   
         $table .= $this->wrapElementToHtml("tbody", $this->createRows());
         $table .= "</table>";
