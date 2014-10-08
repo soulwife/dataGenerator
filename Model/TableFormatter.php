@@ -6,7 +6,7 @@ namespace Model;
  *
  * @author anastasia
  */
-class TableFormatter {
+class TableFormatter extends HtmlFormatter {
     protected $headerItems = array();
     protected $rowItems = array();
     protected $table;
@@ -19,8 +19,8 @@ class TableFormatter {
 	$table = "<table>";
         $table .= $this->wrapElementToHtml("thead", $this->createHeader());   
         $table .= $this->wrapElementToHtml("tbody", $this->createRows());
-        $table .= "/<table>";
-           var_dump($table);
+        $table .= "</table>";
+        $this->clearRows();
         return $table;
     }
     
@@ -29,65 +29,46 @@ class TableFormatter {
     } 
     
     public function getHeaderItems() {
-	return implode('', $this->headerItems );
+	return $this->headerItems;
     }
     
-    public function addRowsItems($elements) {
-        $this->rowItems[] = $elements;      
+    public function addRowsItems($elements) {      
+        $this->rowItems[] = $elements; 
     }
     
-    public function createHeader() {
-        //get rid of this in 5.4
-        $self=$this;
-        $tableHead = function($item) use ($self) {
-            //return $self->wrapElementToHtml("th", $item);            
+    public function getRowsItems() {
+	return $this->rowItems;
+    }
+    
+    private function createHeader() {
+        $tableHead = function($item) {
+            return $this->wrapElementToHtml("th", $item);            
         };
 
         return implode("", array_map($tableHead, $this->headerItems));
     }
     
-    public function createRows() {
-        foreach ($this->rowItems as $row) {
-            //var_dump($row);
-            $this->createRow($row);
+    private function createRows() {
+        $tableRow = "";
+         foreach ($this->rowItems as $row) {
+            $tableRow .= $this->createRow($row);
         }
+        return $tableRow;
     }
     
-    public function createRow($rowElements) {
+    private function createRow($rowElements) {
         $row = "<tr>";
-        //get rid of this in 5.4
-        $self=$this;
-        $traverseRow = function(&$element) use ($self, &$traverseRow) {
-            //foreach ($rowElements as $element) {
-            //var_dump($element);
-                if (is_array($element)) {
-                    $element = $traverseRow($element);
-                } else {
-                    //var_dump($element);
-                   $element = $self->wrapElementToHtml("td", $element); 
-                   var_dump($element);
-                }                    
-            //}            
-        };
-
-        //$row .= $traverseRow($rowElements);
-        //die();
-//        $tableRow = function($item) use ($self) {
-//            var_dump($item);
-//            return $self->wrapElementToHtml("td", $item);
-//        };
-//        
-        array_walk_recursive($rowElements, $traverseRow);
+        array_walk_recursive($rowElements, function(&$element) {
+            $element = $this->wrapElementToHtml("td", $element);                             
+        });
         $row .= implode("", $rowElements);
-       // var_dump($rowElements);
-       // var_dump($row);
+
         return $row . "</tr>";
-    }
+    }   
     
-    public function wrapElementToHtml($element, $item) {
-        return "<" . $element . ">" . $item . "</" . $element . ">";
+    public function clearRows() {
+        $this->rowItems = [];
     }
-    
 }
 
 ?>

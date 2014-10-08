@@ -1,6 +1,6 @@
 <?php
 namespace Model;
-use PDO;
+use PDO, Model\Column;
 /**
  * Description of DatabaseConnection
  *
@@ -10,7 +10,20 @@ use PDO;
 class Database {
 
     private $connection = null;
-    
+    public static $columns = [
+        'COLUMN_NAME',
+        'COLUMN_TYPE', 
+        'COLUMN_KEY', 
+        'EXTRA', 
+        'IS_NULLABLE', 
+        'DATA_TYPE', 
+        'CHARACTER_MAXIMUM_LENGTH', 
+        'NUMERIC_PRECISION', 
+        'NUMERIC_SCALE', 
+        'CHARACTER_SET_NAME', 
+        'COLLATION_NAME', 
+        'COLUMN_COMMENT'
+        ];
     public function __construct($dbHost, $dbName, $dbUser, $dbPass) {
         try { 
             $this->connection = new PDO('mysql:host=' . $dbHost . ';dbname=' . $dbName, $dbUser, $dbPass); 
@@ -30,9 +43,11 @@ class Database {
     }
     
     public function getColumnsInformation($table) {
-        $sql = "select * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = :table AND TABLE_SCHEMA = DATABASE()";
+        $sql = "select COLUMN_NAME, TABLE_NAME as tableName, COLUMN_TYPE, COLUMN_KEY, EXTRA, IS_NULLABLE, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH, NUMERIC_PRECISION, NUMERIC_SCALE, CHARACTER_SET_NAME, COLLATION_NAME, COLUMN_COMMENT "
+                . "FROM INFORMATION_SCHEMA.COLUMNS "
+                . "WHERE TABLE_NAME = :table AND TABLE_SCHEMA = DATABASE()";
         $preparedResult = $this->connection->prepare($sql);
-        $preparedResult->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Column');
+        $preparedResult->setFetchMode(PDO::FETCH_CLASS, __NAMESPACE__ . '\\Column');
         $preparedResult->execute(array(':table' => $table));
         $columns = $preparedResult->fetchAll();
         return $columns;

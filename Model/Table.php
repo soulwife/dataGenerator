@@ -25,13 +25,13 @@ class Table {
     }
     
     public function getFormattedName() {
-        return "Table " . $this->_name;
+        return "<p>Table: " . $this->_name . "</p>";
     }
     
     public function getFormattedOtherFields() {
         $assocArrayToString = function ($v, $k) { 
             return $k . '=' . $v;             
         };
-        return "Information: " . implode(';', array_map($assocArrayToString, $this->_otherFields, array_keys($this->_otherFields)));
+        return "<p>Information: " . implode(';', array_map($assocArrayToString, $this->_otherFields, array_keys($this->_otherFields))) . "</p>";
     }
 }
