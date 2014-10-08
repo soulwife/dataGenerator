@@ -30,11 +30,12 @@ class Database {
     }
     
     public function getColumnsInformation($table) {
-        $sql = "select * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = :table ANDTABLE_SCHEMA = DATABASE()";
+        $sql = "select * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = :table AND TABLE_SCHEMA = DATABASE()";
         $preparedResult = $this->connection->prepare($sql);
+        $preparedResult->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Column');
         $preparedResult->execute(array(':table' => $table));
-        $rows = $preparedResult->fetchAll(PDO::FETCH_ASSOC);
-        var_dump($rows);
+        $columns = $preparedResult->fetchAll();
+        return $columns;
     }
 }
 

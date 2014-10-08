@@ -1,6 +1,5 @@
 <?php
 namespace Model;
-use Model\Database;
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -13,26 +12,26 @@ use Model\Database;
  * @author Anastasiia
  */
 class Table {
-    private $name;
-    private $otherFields = [];
+    private $_name;
+    private $_otherFields;
     
-    public function __construct($name, $otherFields = []) {
-       $this->name = $name; 
-       $this->otherFields = $otherFields;
+    public function __construct($name, $otherFields) {
+       $this->_name = $name; 
+       $this->_otherFields = $otherFields;
     }
     
     public function getName() {
-        return $this->name;
+        return $this->_name;
     }
     
     public function getFormattedName() {
-        return "Table " . $this->name;
+        return "Table " . $this->_name;
     }
     
     public function getFormattedOtherFields() {
         $assocArrayToString = function ($v, $k) { 
             return $k . '=' . $v;             
         };
-        return "Information: " . implode(';', array_map($assocArrayToString, $this->otherFields, array_keys($this->otherFields)));
+        return "Information: " . implode(';', array_map($assocArrayToString, $this->_otherFields, array_keys($this->_otherFields)));
     }
 }
