@@ -37,6 +37,10 @@ class Table {
         return "<h5>Information: " . implode(';', array_map($assocArrayToString, $this->_otherFields, array_keys($this->_otherFields))) . "</h5>";
     }
     
+    public function getFormattedForm() {
+        return '<form method="POST" action="/generate.php"><input type="text" name="amount" value="0" placeholder="1-100000" /><input type="hidden" name="table" value="' . $this->_name . '" /><button type="submit">Generate!</button></form>';
+    }
+    
     public function setColumns($columns) {
         $this->_columns = $columns;
     }

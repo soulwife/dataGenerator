@@ -15,24 +15,38 @@ class TypeMapper {
         'enum' => ['ENUM', 'SET'],
         'datetime' => ['DATE', 'DATETIME', 'TIME'],
         'timestamp' => ['TIMESTAMP'],
-        'blob' => ['TINYLOB', 'MEDIUMLOB', 'LONGLOB', 'BLOB', 'BINARY', 'VARBINARY']        
+        'blob' => ['TINYBLOB', 'MEDIUMBLOB', 'LONGBLOB', 'BLOB', 'BINARY', 'VARBINARY']        
     ];
-    
+    static $mappedType = null;
     public static function convertType($type) {
-        $typeDefined = array_reduce(array_values(static::typeList), function($value) { 
-            if (array_search($type, array_values($value))) {
-                return $value;
-            }
-        });
-        if ( ! $typeDefined ) {
+        $convertedType = self::defineSpecificType(static::$typeList, $type);
+        self::$mappedType = null;
+        if ( ! $convertedType ) {
             throw new \InvalidArgumentException($type . " is not a valid type. Please add it to the TypeMapper typeList array.");
         }
-var_dump($typeDefined);
-        return; //$this->typeList[$type];
+
+        return $convertedType;
+    }
+    
+    public static function defineSpecificType($definedTypes, $type, $typeName = null) {
+        if ( ! self::$mappedType) {
+            foreach ($definedTypes as $currentKeyType => $definedType) {
+                if (is_array($definedType)) {
+                    static::defineSpecificType($definedType, $type, $currentKeyType);
+                } else {
+                    if (strpos(strtoupper($type), $definedType) !== FALSE) {
+                        self::$mappedType = $typeName;
+                        break;
+                    }
+                }
+            }
+        }
+        
+        return self::$mappedType;
     }
     
     public static function isNumeric($type) {
-        
+        return $type == 'integer';
     }
     
     public static function isString($type) {

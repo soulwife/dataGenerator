@@ -13,7 +13,9 @@ class Column {
     private $_maxLength;
     
     public function __construct() {
-
+        var_dump("test");
+        $this->setConvertedType();
+        $this->setMaxLength();
     }
     
     public function __get($field) { 
@@ -37,12 +39,12 @@ class Column {
         return $this->_tableName;
     }
     
-    public function setType() {
-        $this->_convertedType = TypeMapper::convertType($this->type);
+    public function setConvertedType() {
+        $this->_convertedType = TypeMapper::convertType($this->_type);
     }
     
     public function setMaxLength() {
-        $this->_maxLength = TypeMapper::isNumeric($this->type) ? $this->numLength : $this->charLength;
+        $this->_maxLength = TypeMapper::isNumeric($this->_convertedType) ? $this->_numLength : $this->_charLength;
     }
     
     public function getMaxLength() {
