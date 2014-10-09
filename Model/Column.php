@@ -7,8 +7,10 @@ namespace Model;
  * @author anastasia
  */
 class Column {
-    private $tableName;
-    private $_otherFields = [];   
+    private $_tableName;
+    private $_otherFields = [];
+    private $_convertedType;
+    private $_maxLength;
     
     public function __construct() {
 
@@ -28,11 +30,23 @@ class Column {
     }
 
     public function setTableName($tableName) {
-        $this->tableName = $tableName;
+        $this->_tableName = $tableName;
     }
     
     public function getTableName() {
-        return $this->tableName;
+        return $this->_tableName;
+    }
+    
+    public function setType() {
+        $this->_convertedType = TypeMapper::convertType($this->type);
+    }
+    
+    public function setMaxLength() {
+        $this->_maxLength = TypeMapper::isNumeric($this->type) ? $this->numLength : $this->charLength;
+    }
+    
+    public function getMaxLength() {
+        return $this->_maxLength;
     }
 }
 

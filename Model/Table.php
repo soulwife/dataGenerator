@@ -14,6 +14,8 @@ namespace Model;
 class Table {
     private $_name;
     private $_otherFields;
+    /* Array of Column*/
+    private $_columns;
     
     public function __construct($name, $otherFields) {
        $this->_name = $name; 
@@ -33,5 +35,13 @@ class Table {
             return $k . '=' . $v;             
         };
         return "<h5>Information: " . implode(';', array_map($assocArrayToString, $this->_otherFields, array_keys($this->_otherFields))) . "</h5>";
+    }
+    
+    public function setColumns($columns) {
+        $this->_columns = $columns;
+    }
+    
+    public function getColumns() {
+        return $this->_columns;
     }
 }

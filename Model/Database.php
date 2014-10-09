@@ -43,7 +43,7 @@ class Database {
     }
     
     public function getColumnsInformation($table) {
-        $sql = "select COLUMN_NAME, TABLE_NAME as tableName, COLUMN_TYPE, COLUMN_KEY, EXTRA, IS_NULLABLE, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH, NUMERIC_PRECISION, NUMERIC_SCALE, CHARACTER_SET_NAME, COLLATION_NAME, COLUMN_COMMENT "
+        $sql = "select COLUMN_NAME as name, TABLE_NAME as tableName, COLUMN_TYPE as type, COLUMN_KEY, EXTRA, IS_NULLABLE, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH as charLength, NUMERIC_PRECISION as numLength, NUMERIC_SCALE, CHARACTER_SET_NAME, COLLATION_NAME, COLUMN_COMMENT "
                 . "FROM INFORMATION_SCHEMA.COLUMNS "
                 . "WHERE TABLE_NAME = :table AND TABLE_SCHEMA = DATABASE()";
         $preparedResult = $this->connection->prepare($sql);
@@ -51,6 +51,10 @@ class Database {
         $preparedResult->execute(array(':table' => $table));
         $columns = $preparedResult->fetchAll();
         return $columns;
+    }
+    
+    public function __destruct() {
+        $this->connection = null;
     }
 }
 
