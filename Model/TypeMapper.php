@@ -8,13 +8,13 @@ namespace Model;
  * @author anastasia
  */
 class TypeMapper {
+    const ENUM = 'enum';
     public static $typeList = [
         'integer' => ['TINYINT', 'SMALLINT', 'MEDIUMINT', 'INT', 'INTEGER', 'BIGINT', 'YEAR', 'BIT', 'BOOLEAN'],
         'float' => ['FLOAT', 'DOUBLE', 'REAL', 'DECIMAL', 'DEC'],
         'string' => ['CHAR', 'TEXT', 'VARCHAR', 'TINYTEXT', 'MEDIUMTEXT', 'LONGTEXT'],
         'enum' => ['ENUM', 'SET'],
-        'datetime' => ['DATE', 'DATETIME', 'TIME'],
-        'timestamp' => ['TIMESTAMP'],
+        'datetime' => ['DATE', 'DATETIME', 'TIME', 'TIMESTAMP'],
         'blob' => ['TINYBLOB', 'MEDIUMBLOB', 'LONGBLOB', 'BLOB', 'BINARY', 'VARBINARY']        
     ];
     static $mappedType = null;
@@ -49,8 +49,8 @@ class TypeMapper {
         return $type == 'integer';
     }
     
-    public static function isString($type) {
-        
+    public static function isEnum($type) {
+       return $type == 'enum'; 
     }
     
     public static function isDate($type) {

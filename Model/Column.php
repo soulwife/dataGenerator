@@ -16,12 +16,12 @@ class Column {
    
     
     public function __construct() {
-        var_dump("test");
         $this->setConvertedType();
         $this->setMaxLength();
     }
     
     public function __get($field) { 
+        
         return $this->_otherFields[$field];        
     } 
     
@@ -59,6 +59,14 @@ class Column {
     
     public function isAutoIncremented() {
         return strpos($this->_extra, self::AUTO_INCREMENT) !== false; 
+    }
+    
+    public function isEnumType() {
+        return TypeMapper::isEnum($this->_convertedType);
+    }
+    
+    public function getEnumFields() {
+        return explode(",", trim(strstr($this->_type, "("), "()"));
     }
 }
 

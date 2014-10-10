@@ -34,6 +34,6 @@ try {
 
 
 } catch (Exception $e) {
-   echo $e; 
+   echo $e->getMessage(); 
 }
 require_once 'templates/footer.html';

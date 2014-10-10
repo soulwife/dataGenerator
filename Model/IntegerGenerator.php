@@ -6,9 +6,9 @@ namespace Model;
  *
  * @author anastasia
  */
-class NumberGenerator {
+class IntegerGenerator {
     public function generate($maxLength) {
-        return rand(0, $maxLength);
+        return rand(0, $maxLength > 1 ? pow(10, $maxLength) : 1);
     }
 }
 

@@ -1,4 +1,5 @@
 <?php
+namespace Model;
 
 /**
  * Description of DateGenerator
@@ -7,8 +8,7 @@
  */
 class DatetimeGenerator {
     public function generate() {
-        $time = rand(0, microtime());
-        return date('Y-m-d', $time);
+        return date('Y-m-d', rand(0, microtime(true)));
     }
 }
 

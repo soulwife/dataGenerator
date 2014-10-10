@@ -8,7 +8,11 @@ namespace Model;
  */
 class EnumGenerator {
     public function generate() {
-        //$possibleValues[array_rand($possibleValues)]
+        //no needed
+    }
+    
+    public function generateFromPossibleValues($possibleValues) {
+        return trim($possibleValues[array_rand($possibleValues)], "''");
     }
 }
 

@@ -16,7 +16,7 @@ class KeyReference {
     private $_referencedTables = [];
     
     function __construct(PDO $connection) {
-        $this->connection = $connection;
+        $this->_connection = $connection;
     }
     
     function getReferencingTablesAndColumns($table, $column) {
