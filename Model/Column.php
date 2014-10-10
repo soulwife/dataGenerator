@@ -7,10 +7,13 @@ namespace Model;
  * @author anastasia
  */
 class Column {
+    const AUTO_INCREMENT = "auto_increment";
+    
     private $_tableName;
     private $_otherFields = [];
     private $_convertedType;
     private $_maxLength;
+   
     
     public function __construct() {
         var_dump("test");
@@ -19,8 +22,7 @@ class Column {
     }
     
     public function __get($field) { 
-        return $this->_otherFields[$field]; 
-        
+        return $this->_otherFields[$field];        
     } 
     
     public function __set($field, $val) {
@@ -43,12 +45,20 @@ class Column {
         $this->_convertedType = TypeMapper::convertType($this->_type);
     }
     
+    public function getConvertedType() {
+        return $this->_convertedType;
+    }
+    
     public function setMaxLength() {
         $this->_maxLength = TypeMapper::isNumeric($this->_convertedType) ? $this->_numLength : $this->_charLength;
     }
     
     public function getMaxLength() {
         return $this->_maxLength;
+    }
+    
+    public function isAutoIncremented() {
+        return strpos($this->_extra, self::AUTO_INCREMENT) !== false; 
     }
 }
 

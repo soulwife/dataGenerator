@@ -1,4 +1,5 @@
 <?php
+namespace Model;
 
 /**
  * Description of NumberGenerator
