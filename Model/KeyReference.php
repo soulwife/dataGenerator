@@ -10,13 +10,8 @@ class KeyReference {
     const FROM_PART_OF_SQL = " FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE 
                 WHERE TABLE_SCHEMA = DATABASE() AND REFERENCED_TABLE_SCHEMA = DATABASE() "; 
     
-    private $_connection;
     private $_referencedColumns = [];
     private $_referencedTables = [];
-    
-    function __construct(\PDO $connection) {
-        $this->_connection = $connection;
-    }
     
     public function getReferencingForColumns($table, $column) {
         $result = $this->_referencedColumns[$table][$column];     
@@ -25,8 +20,8 @@ class KeyReference {
             $sql =  "SELECT TABLE_NAME as tableName, COLUMN_NAME as columnName"
                     . self::FROM_PART_OF_SQL 
                     . "AND REFERENCED_TABLE_NAME = :table AND REFERENCED_COLUMN_NAME = :column";
-            $preparedResult = $this->_connection->prepare($sql);
-            $preparedResult->execute(array(':table' => $this->_connection->quote($table), ':column' => $this->_connection->quote($column)));
+            $preparedResult = Database::getConnection()->prepare($sql);
+            $preparedResult->execute(array(':table' => Database::getConnection()->quote($table), ':column' => Database::getConnection()->quote($column)));
             $result = $preparedResult->fetch(PDO::FETCH_ASSOC);
             $this->_referencedColumns[$table][$column] = $result;           
         }
@@ -41,7 +36,7 @@ class KeyReference {
             $sql =  "SELECT REFERENCED_TABLE_NAME as rTableName, COLUMN_NAME as columnName, REFERENCED_COLUMN_NAME as rColumnName"
                     . self::FROM_PART_OF_SQL 
                     . "AND TABLE_NAME = :table";
-            $preparedResult = $this->_connection->prepare($sql);
+            $preparedResult = Database::getConnection()->prepare($sql);
             $preparedResult->execute(array(':table' => $table));
             $result = $preparedResult->fetchAll(\PDO::FETCH_ASSOC);
             $this->_referencedTables[$table] = $result;           
@@ -68,10 +63,10 @@ class KeyReference {
             return [];
         }
         $randomRowSqlPart = " ORDER BY RAND() LIMIT 1";
-        $preparedResult = $this->_connection->prepare($sql);
+        $preparedResult = Database::getConnection()->prepare($sql);
         foreach ($this->_referencedTables[$table] as $tableRefInfo) {
             $sql =  "SELECT " . $tableRefInfo['rColumnName'] . " FROM " . $tableRefInfo['rTableName'] . $randomRowSqlPart;
-            $result = $this->_connection->query($sql);
+            $result = Database::getConnection()->query($sql);
             $columnValue = $result->fetchColumn();
             if ($columnValue) {
                 $referencedValues[$tableRefInfo['columnName']] = $columnValue;

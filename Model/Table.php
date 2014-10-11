@@ -38,7 +38,11 @@ class Table {
     }
     
     public function getFormattedForm() {
-        return '<form method="POST" action="/generate.php"><input type="text" name="amount" value="0" placeholder="1-100000" /><input type="hidden" name="table" value="' . $this->_name . '" /><button type="submit">Generate!</button></form>';
+        return '<form method="POST" action="/generate.php"><input type="text" name="amount" value="0" placeholder="1-100000" /><input type="hidden" name="table" value="' . $this->_name . '" /><button type="submit">Generate</button></form>';
+    }
+    
+    public function getShowDetailsForm() {
+        return '<form method="POST" action="/detail.php"><input type="hidden" name="table" value="' . $this->_name . '" /><button type="submit">Show content</button></form>';
     }
     
     public function setColumns($columns) {
