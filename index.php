@@ -1,10 +1,11 @@
 <?php
 require_once 'Autoloader.php';
-use Model\Database, Model\Table, Model\Column, Model\TableFormatter, Model\TypeMapper;
+use Model\Database, Model\Table, Model\Column, Model\TableFormatter, Model\TypeMapper, Model\KeyReference;
 require_once 'templates/header.html';
 try {
     $db = new Database("127.0.0.1", "splendit", "root", "");
     //$db = new Database("127.0.0.1", "splendit", "root", "root");
+    $keyReference = new KeyReference($db->getConnection());
     function getTables($db) {
         $tablesInfo = $db->getTablesInformation();
         foreach ($tablesInfo as $tableInfo) {
@@ -13,11 +14,12 @@ try {
         return $tables;
     }
     
-    function  displayTablesWithColumns($db, $tables) {
+    function  displayTablesWithColumns($db, $tables, $keyReference) {
         $tableFormatter = new TableFormatter(Database::$columns);
         foreach ($tables as $table) {
            echo $table->getFormattedName();
            echo $table->getFormattedOtherFields();
+           echo $keyReference->getFormattedReferencedForTables($table->getName());
            echo $table->getFormattedForm();
            $tableColumns = $db->getColumnsInformation($table->getName());
            $table->setColumns($tableColumns);
@@ -30,7 +32,7 @@ try {
     }
     
     $tables = getTables($db);
-    displayTablesWithColumns($db, $tables);
+    displayTablesWithColumns($db, $tables, $keyReference);
 
 
 } catch (Exception $e) {

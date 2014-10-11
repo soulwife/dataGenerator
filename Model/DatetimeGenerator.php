@@ -6,8 +6,8 @@ namespace Model;
  *
  * @author anastasia
  */
-class DatetimeGenerator {
-    public function generate() {
+class DatetimeGenerator extends Generator{
+    public function generate($maxLength = 0) {
         return date('Y-m-d', rand(0, microtime(true)));
     }
 }

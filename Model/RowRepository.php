@@ -1,6 +1,6 @@
 <?php
 namespace Model;
-
+use PDO;
 /**
  * Description of RowRepository
  *
@@ -8,6 +8,7 @@ namespace Model;
  */
 class RowRepository {
     private $_connection;
+    private $_keyReference;
     
     public function __construct($connection) {
         $this->_connection = $connection;
@@ -26,9 +27,14 @@ class RowRepository {
         } catch (PDOExecption $e) {
             $this->_connection->rollback(); 
             echo "Insertion error: " . $e->getMessage();
-        }
-        
+        }        
     }
+    
+    public function getAlreadyUsedValues($tableName, $columnName) {
+        $result = $this->_connection->query("SELECT `" . $columnName . "` FROM $tableName ");
+        $values = $result->fetchAll() ? : [];
+        return call_user_func_array('array_merge', $values);
+    } 
 }
 
 ?>

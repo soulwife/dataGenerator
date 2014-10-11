@@ -27,7 +27,7 @@ class Table {
     }
     
     public function getFormattedName() {
-        return "<h4>Table: " . $this->_name . "</h4>";
+        return "<h3>Table: " . $this->_name . "</h3>";
     }
     
     public function getFormattedOtherFields() {

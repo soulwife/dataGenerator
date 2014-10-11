@@ -8,12 +8,15 @@ namespace Model;
  */
 class Column {
     const AUTO_INCREMENT = "auto_increment";
+    const UNIQUE = "UNI";
+    const PRIMARY = "PRI";
     
     private $_tableName;
     private $_otherFields = [];
     private $_convertedType;
     private $_maxLength;
    
+    static $indexTypes = array(self::UNIQUE, self::PRIMARY);
     
     public function __construct() {
         $this->setConvertedType();
@@ -67,6 +70,14 @@ class Column {
     
     public function getEnumFields() {
         return explode(",", trim(strstr($this->_type, "("), "()"));
+    }
+    
+    public function isUnique() {
+        return $this->_key == self::UNIQUE;
+    }
+    
+    public function isPrimary() {
+        return $this->_key == self::PRIMARY;
     }
 }
 

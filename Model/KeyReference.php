@@ -7,23 +7,24 @@ namespace Model;
  */
 class KeyReference {
     
-    const MAIN_PART_OF_SQL = "SELECT `TABLE_NAME` as table, `COLUMN_NAME` as column 
-                FROM information_schema.KEY_COLUMN_USAGE 
+    const FROM_PART_OF_SQL = " FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE 
                 WHERE TABLE_SCHEMA = DATABASE() AND REFERENCED_TABLE_SCHEMA = DATABASE() "; 
     
     private $_connection;
     private $_referencedColumns = [];
     private $_referencedTables = [];
     
-    function __construct(PDO $connection) {
+    function __construct(\PDO $connection) {
         $this->_connection = $connection;
     }
     
-    function getReferencingTablesAndColumns($table, $column) {
+    public function getReferencingForColumns($table, $column) {
         $result = $this->_referencedColumns[$table][$column];     
         
-        if (!isset($result)) {
-            $sql = self::MAIN_PART_OF_SQL . "AND REFERENCED_TABLE_NAME = :table AND REFERENCED_COLUMN_NAME = :column";
+        if ( ! isset($result)) {
+            $sql =  "SELECT TABLE_NAME as tableName, COLUMN_NAME as columnName"
+                    . self::FROM_PART_OF_SQL 
+                    . "AND REFERENCED_TABLE_NAME = :table AND REFERENCED_COLUMN_NAME = :column";
             $preparedResult = $this->_connection->prepare($sql);
             $preparedResult->execute(array(':table' => $this->_connection->quote($table), ':column' => $this->_connection->quote($column)));
             $result = $preparedResult->fetch(PDO::FETCH_ASSOC);
@@ -33,18 +34,54 @@ class KeyReference {
         return $result; 
     }
     
-    function getReferencedTables($table) {
+    private function getReferencedForTables($table) {
         $result = $this->_referencedTables[$table];     
         
         if (!isset($result)) {
-            $sql = self::MAIN_PART_OF_SQL . "AND TABLE_NAME = :table";
+            $sql =  "SELECT REFERENCED_TABLE_NAME as rTableName, COLUMN_NAME as columnName, REFERENCED_COLUMN_NAME as rColumnName"
+                    . self::FROM_PART_OF_SQL 
+                    . "AND TABLE_NAME = :table";
             $preparedResult = $this->_connection->prepare($sql);
-            $preparedResult->execute(array(':table' => $this->_connection->quote($table)));
-            $result = $preparedResult->fetch(PDO::FETCH_ASSOC);
-            $this->_referencedColumns[$table][$column] = $result;           
+            $preparedResult->execute(array(':table' => $table));
+            $result = $preparedResult->fetchAll(\PDO::FETCH_ASSOC);
+            $this->_referencedTables[$table] = $result;           
         }
         
         return $result; 
+    }
+    
+    public function getFormattedReferencedForTables($table) {
+        $this->getReferencedForTables($table);
+        if ( ! $this->_referencedTables[$table]) {
+            return "";
+        }
+        $informationString = "<h5>Referenced tables for this table: ";
+        foreach ($this->_referencedTables[$table] as $tableRefInfo) {
+           $informationString .= "'". $tableRefInfo['rTableName'] . "' with column '" . $tableRefInfo['rColumnName'] . "' for column '" . $tableRefInfo['columnName'] ."';";
+        }
+        return rtrim($informationString , ";") . "</h5>";
+    }
+    
+    public function getReferencingColumnsValuesForTable($table) {
+        $this->getReferencedForTables($table);
+        if ( ! $this->_referencedTables[$table]) {
+            return [];
+        }
+        $randomRowSqlPart = " ORDER BY RAND() LIMIT 1";
+        $preparedResult = $this->_connection->prepare($sql);
+        foreach ($this->_referencedTables[$table] as $tableRefInfo) {
+            $sql =  "SELECT " . $tableRefInfo['rColumnName'] . " FROM " . $tableRefInfo['rTableName'] . $randomRowSqlPart;
+            $result = $this->_connection->query($sql);
+            $columnValue = $result->fetchColumn();
+            if ($columnValue) {
+                $referencedValues[$tableRefInfo['columnName']] = $columnValue;
+            } else {
+                $referencedValues = 0;
+                break;
+            }
+        }
+        
+        return $referencedValues;
     }
 }
 

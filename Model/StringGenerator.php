@@ -6,9 +6,9 @@ namespace Model;
  *
  * @author anastasia
  */
-class StringGenerator {
+class StringGenerator extends Generator {
     const MAX_POSSIBLE_LENGTH = 10;
-    public function generate($maxLength) {
+    public function generate($maxLength = 0) {
         $charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
         $str = '';
         $count = strlen($charset) - 1;

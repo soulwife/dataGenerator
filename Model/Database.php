@@ -1,6 +1,6 @@
 <?php
 namespace Model;
-use PDO, Model\Column;
+use PDO;
 /**
  * Description of DatabaseConnection
  *
@@ -21,8 +21,7 @@ class Database {
         'NUMERIC PRECISION', 
         'NUMERIC SCALE', 
         'CHARACTER SET NAME', 
-        'COLLATION NAME', 
-        'COLUMN COMMENT'
+        'COLLATION NAME'
         ];
     const TABLES_SQL = "select `TABLE_NAME` as name, `ENGINE`, `TABLE_ROWS` FROM INFORMATION_SCHEMA.TABLES WHERE `TABLE_SCHEMA` = DATABASE()";
     const TABLE_SQL = "select `TABLE_NAME` as name FROM INFORMATION_SCHEMA.TABLES WHERE `TABLE_SCHEMA` = DATABASE() AND `TABLE_NAME` = :table LIMIT 1";
@@ -48,7 +47,7 @@ class Database {
     }
     
     public function getColumnsInformation($table) {
-        $sql = "select `COLUMN_NAME` as _name, `TABLE_NAME` as _tableName, `COLUMN_TYPE` as _type, `COLUMN_KEY` as _key, `EXTRA` as _extra, `IS_NULLABLE`, `DATA_TYPE`, `CHARACTER_MAXIMUM_LENGTH` as _charLength, `NUMERIC_PRECISION` as _numLength, `NUMERIC_SCALE`, `CHARACTER_SET_NAME`, `COLLATION_NAME`, `COLUMN_COMMENT` "
+        $sql = "select `COLUMN_NAME` as _name, `TABLE_NAME` as _tableName, `COLUMN_TYPE` as _type, `COLUMN_KEY` as _key, `EXTRA` as _extra, `IS_NULLABLE`, `DATA_TYPE`, `CHARACTER_MAXIMUM_LENGTH` as _charLength, `NUMERIC_PRECISION` as _numLength, `NUMERIC_SCALE`, `CHARACTER_SET_NAME`, `COLLATION_NAME` "
                 . "FROM INFORMATION_SCHEMA.COLUMNS "
                 . "WHERE `TABLE_NAME` = :table AND `TABLE_SCHEMA` = DATABASE()";
         $preparedResult = $this->_connection->prepare($sql);

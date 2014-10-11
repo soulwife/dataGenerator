@@ -6,8 +6,8 @@ namespace Model;
  *
  * @author anastasia
  */
-class BlobGenerator {
-    public function generate($maxLength) {
+class BlobGenerator extends Generator {
+    public function generate($maxLength = 0) {
         return decbin(rand(1, $maxLength));
     }
 }

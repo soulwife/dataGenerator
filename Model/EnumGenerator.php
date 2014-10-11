@@ -6,8 +6,8 @@ namespace Model;
  *
  * @author anastasia
  */
-class EnumGenerator {
-    public function generate() {
+class EnumGenerator extends Generator {
+    public function generate($maxLength = 0) {
         //no needed
     }
     
