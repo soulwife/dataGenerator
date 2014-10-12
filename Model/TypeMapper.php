@@ -15,7 +15,7 @@ class TypeMapper {
         'string' => ['CHAR', 'TEXT', 'VARCHAR', 'TINYTEXT', 'MEDIUMTEXT', 'LONGTEXT', 'TINYBLOB', 'MEDIUMBLOB', 'LONGBLOB', 'BLOB', 'BINARY', 'VARBINARY'],
         'enum' => ['ENUM', 'SET'],
         'datetime' => ['DATE', 'DATETIME', 'TIME', 'TIMESTAMP'],
-        //'blob' => ['TINYBLOB', 'MEDIUMBLOB', 'LONGBLOB', 'BLOB', 'BINARY', 'VARBINARY']        
+        /* TODO: 'blob' => ['TINYBLOB', 'MEDIUMBLOB', 'LONGBLOB', 'BLOB', 'BINARY', 'VARBINARY'] */
     ];
     static $mappedType = null;
     public static function convertType($type) {
