@@ -1,5 +1,6 @@
 <?php
 namespace Model;
+use Model\Repository\RowRepository; 
 
 /**
  * Description of Row
@@ -46,7 +47,7 @@ class Row {
                 $this->_columnsInfo[$column->_name][self::TYPE] = $type;
                 $this->_columnsInfo[$column->_name][self::MAX_LENGTH] = $column->getMaxLength();
                 $this->_columnsInfo[$column->_name][self::UNIQUE_OR_PRIMARY] = $column->isUnique() || $column->isPrimary();
-                $generatorClassName = __NAMESPACE__ . "\\" . ucfirst($type) . "Generator";
+                $generatorClassName = __NAMESPACE__ . "\\Generator\\" . ucfirst($type) . "Generator";
                 if ( ! in_array($generatorClassName, $generatorsClassNames)) {
                     $generatorsClassNames[] = $generatorClassName;
                     $this->_generators[$column->getConvertedType()] = new $generatorClassName();
@@ -56,13 +57,19 @@ class Row {
     }
        
     public function createRows($amount) {
-        $rowCount = 0;
-        while ($rowCount < $amount) {
+        $rowCount = $result = 1;
+        while ($rowCount <= $amount && $result) {
             $rows[] = $this->createRow();
             $rowCount++;
+            if ($rowCount >= RowRepository::TRANSACTION_LIMIT || $rowCount > $amount) {
+                $result = $this->_repository->insert($this->_tableName, "`" . implode("`,`", $this->_names) . "`", $rows);
+                $amount = $amount - $rowCount;
+                $rowCount = 1;
+                $rows = [];
+            }
         }
         
-        $this->_repository->insert($this->_tableName, "`" . implode("`,`", $this->_names) . "`", $rows);
+        return $result;
     }
     
     private function createRow() {

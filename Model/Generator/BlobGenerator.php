@@ -1,5 +1,5 @@
 <?php
-namespace Model;
+namespace Model\Generator;
 
 /**
  * Description of BlobGenerator
@@ -7,8 +7,9 @@ namespace Model;
  * @author anastasia
  */
 class BlobGenerator extends Generator {
+    const MAX_POSSIBLE_LENGTH = 1000;
     public function generate($maxLength = 0) {
-        return decbin(rand(1, $maxLength));
+        /* TODO: implement random images generating, now using StringGenerators for Blobs*/
     }
 }
 

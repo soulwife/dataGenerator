@@ -1,6 +1,6 @@
 <?php
-namespace Model;
-use PDO;
+namespace Model\Repository;
+use PDO, Model\Table, Model\Database;
 
 /**
  * Description of TableRepository
@@ -23,7 +23,7 @@ class TableRepository {
     ];
 
     public function getTablesInformation() { 
-        $sql = "SELECT `TABLE_NAME` as name, `ENGINE`, `TABLE_ROWS` FROM INFORMATION_SCHEMA.TABLES WHERE `TABLE_SCHEMA` = DATABASE()";
+        $sql = "SELECT `TABLE_NAME` as name, `ENGINE`, `AUTO_INCREMENT`, `TABLE_COLLATION` FROM INFORMATION_SCHEMA.TABLES WHERE `TABLE_SCHEMA` = DATABASE()";
         $result = Database::getConnection()->query($sql);
         return $result->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -33,7 +33,7 @@ class TableRepository {
                 . "FROM INFORMATION_SCHEMA.COLUMNS "
                 . "WHERE `TABLE_NAME` = :table AND `TABLE_SCHEMA` = DATABASE()";
         $preparedResult = Database::getConnection()->prepare($sql);
-        $preparedResult->setFetchMode(PDO::FETCH_CLASS, __NAMESPACE__ . '\\Column');
+        $preparedResult->setFetchMode(PDO::FETCH_CLASS, 'Model\\Column');
         $preparedResult->execute(array(':table' => $table));
         $columns = $preparedResult->fetchAll();
         return $columns;
@@ -43,7 +43,6 @@ class TableRepository {
         $sql = "SELECT `TABLE_NAME` as name FROM INFORMATION_SCHEMA.TABLES WHERE `TABLE_SCHEMA` = DATABASE() AND `TABLE_NAME` = :table LIMIT 1";
         $preparedResult = Database::getConnection()->prepare($sql);
         $preparedResult->execute(array(':table' => $table));
-        var_dump($preparedResult);
         return $preparedResult->fetch(PDO::FETCH_ASSOC);       
     }
     
@@ -57,14 +56,16 @@ class TableRepository {
     
     public function getTableData($table) {
         $sql = "SELECT * FROM " . $table;
-        $result = Database::getConnection()->query($sql);
-        return $result->fetchAll(PDO::FETCH_ASSOC);      
+        $prepResult = Database::getConnection()->prepare($sql);
+        $prepResult->execute();
+        return $prepResult->fetchAll(PDO::FETCH_ASSOC);      
     }
     
     public function getTableColumnHeaders($table) {
         $sql = "DESCRIBE " . $table;
-        $result = Database::getConnection()->query($sql);
-        return $result->fetchAll(PDO::FETCH_COLUMN); 
+        $prepResult = Database::getConnection()->prepare($sql);
+        $prepResult->execute();
+        return $prepResult->fetchAll(PDO::FETCH_COLUMN); 
     }
     
     function getTables() {
@@ -73,23 +74,11 @@ class TableRepository {
             $tables[] = new Table($tableInfo['name'], array_slice($tableInfo, 1));
         } 
         return $tables;
-    }
+    }   
     
-    function displayTablesWithColumns($tables, $keyReference) {
-        $tableFormatter = new TableFormatter(TableRepository::$columns);
-        foreach ($tables as $table) {
-           echo $table->getFormattedName();
-           echo $table->getFormattedOtherFields();
-           echo $keyReference->getFormattedReferencedForTables($table->getName());
-           echo $table->getFormattedForm();
-           $tableColumns = $this->getColumnsInformation($table->getName());
-           $table->setColumns($tableColumns);
-           array_map(function($column) use (&$tableFormatter) {
-               $tableFormatter->addRowsItems($column->getOtherFields());
-           }, $tableColumns);
-           echo $tableFormatter->createTable();
-           echo $table->getShowDetailsForm();
-           $columns[] = $tableColumns;
-        }
+    public function getTableTotalRowsCount($table) {
+        $sql = "SELECT COUNT(*) FROM " . $table;
+        $result = Database::getConnection()->query($sql);
+        return $result->fetch(PDO::FETCH_NUM);      
     }
 }

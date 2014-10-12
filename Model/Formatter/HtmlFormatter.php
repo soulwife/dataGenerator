@@ -1,5 +1,5 @@
 <?php
-namespace Model;
+namespace Model\Formatter;
 
 /**
  * Description of HtmlFormatter

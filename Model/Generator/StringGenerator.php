@@ -1,5 +1,5 @@
 <?php
-namespace Model;
+namespace Model\Generator;
 
 /**
  * Description of StringGenerator
@@ -12,9 +12,10 @@ class StringGenerator extends Generator {
         $charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 0123456789';
         $str = '';
         $count = strlen($charset) - 1;
-        $strLength = rand(1, $maxLength < self::MAX_POSSIBLE_LENGTH ? $maxLength : self::MAX_POSSIBLE_LENGTH);
+        $maxPossibleLength = $maxLength < self::MAX_POSSIBLE_LENGTH ? $maxLength : self::MAX_POSSIBLE_LENGTH;
+        $strLength = mt_rand($maxPossibleLength % mt_rand($maxPossibleLength, $maxPossibleLength*1000), $maxPossibleLength);
         while ($strLength--) {
-            $str .= $charset[rand(0, $count)];
+            $str .= $charset[mt_rand(0, $count)];
         }
         
         return $str;

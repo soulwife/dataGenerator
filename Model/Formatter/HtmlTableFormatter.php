@@ -1,12 +1,12 @@
 <?php
-namespace Model;
+namespace Model\Formatter;
 
 /**
  * Description of TableFormatter
  *
  * @author anastasia
  */
-class TableFormatter extends HtmlFormatter {
+class HtmlTableFormatter extends HtmlFormatter {
     protected $headerItems = array();
     protected $rowItems = array();
     protected $table;

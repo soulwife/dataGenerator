@@ -7,8 +7,12 @@ namespace Model;
  * @author Anastasiia
  */
 class SessionService {
-    public function saveToSession() {
+    
+    public function __construct() {
         session_start();
+    }
+    
+    public function saveToSession() {
         $dbHost = 'dbHost';
         $dbName = 'dbName';
         $dbUser = 'dbUser';
@@ -18,8 +22,6 @@ class SessionService {
             $_SESSION[$dbName] = $_POST[$dbName];
             $_SESSION[$dbUser] = $_POST[$dbUser];
             $_SESSION[$dbPass] = $_POST[$dbPass];
-            header("Location: /list.php");
-            exit();
         }
     }
     

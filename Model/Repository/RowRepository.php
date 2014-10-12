@@ -1,25 +1,24 @@
 <?php
-namespace Model;
-use PDO;
+namespace Model\Repository;
+use PDO, Model\Database;;
 /**
  * Description of RowRepository
  *
  * @author anastasia
  */
 class RowRepository {
+    const TRANSACTION_LIMIT = 100;
     public function insert($table, $names, $rowsValues) {      
         try {
-            $connection = Database::getConnection();
-            $connection->beginTransaction();
+            Database::getConnection()->beginTransaction();
             foreach ($rowsValues as $oneRowValues) {
                 $sql = "INSERT INTO `" . $table . "` (" . $names . ") VALUES (" . $oneRowValues . ")";
-                var_dump($sql);
-                $connection->query($sql);
+                Database::getConnection()->query($sql);
             }
 
-            $connection->commit(); 
+            return Database::getConnection()->commit(); 
         } catch (PDOExecption $e) {
-            $connection->rollback(); 
+            Database::getConnection()->rollback(); 
             echo "Insertion error: " . $e->getMessage();
         }        
     }

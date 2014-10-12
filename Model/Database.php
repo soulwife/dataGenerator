@@ -9,7 +9,7 @@ use PDO;
  
 class Database {
 
-    private static $_connection = null;
+    private static $_connection;
     
     private function __construct() {}
     private function setConnection($dbHost, $dbName, $dbUser, $dbPass) {
@@ -24,13 +24,13 @@ class Database {
         return static::$_connection;
     }
     
-    public static function getConnection() {
+    final public static function getConnection() {
         if (empty(static::$_connection)) {
             $class = get_called_class();
             $db = new $class();
             static::$_connection = $db->setConnection($_SESSION['dbHost'], $_SESSION['dbName'], $_SESSION['dbUser'], $_SESSION['dbPass']);
         }
-        //var_dump(static::$_connection);
+
         return static::$_connection;
     }
     
@@ -39,9 +39,5 @@ class Database {
     private function __wakeup() {}
     
     private function __sleep() {}
-
-    public function __destruct() {
-        static::$_connection = null;
-    }
 }
 
