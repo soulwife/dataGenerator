@@ -2,15 +2,22 @@
 namespace Model\Generator;
 
 /**
- * Description of EnumGenerator
+ * Selects random element from data 
  *
  * @author anastasia
  */
 class EnumGenerator extends Generator {
-    public function generate($maxLength = 0) {
-        //no needed
-    }
     
+    /**
+     * {@inheritdoc}
+     */
+    public function generate($maxLength = 0) {}
+    
+    /**
+     * 
+     * @param array $possibleValues
+     * @return string
+     */
     public function generateFromPossibleValues($possibleValues) {
         return trim($possibleValues[array_rand($possibleValues)], "''");
     }

@@ -3,7 +3,7 @@ namespace Model;
 use Model\Repository\RowRepository; 
 
 /**
- * Description of Row
+ * Operate with table row
  *
  * @author anastasia
  */
@@ -21,6 +21,16 @@ class Row {
     private $_fieldsForChooseFrom = [];
     private $_referencedValues = [];
     
+    /**
+     * Create $this->_columnsInfo with data: type, maxLength and key type, initialize necessary type generators, 
+     * remember necessary (for enum or primary) values in $this->_fieldsForChooseFrom
+     * 
+     * @param string $tableName
+     * @param array $columns
+     * @param RowRepository $repository
+     * @param array $referencedValues
+     * @throws \Exception
+     */
     public function __construct($tableName, $columns, $repository, $referencedValues) {
         $this->_repository = $repository;
         $this->_tableName = $tableName;
@@ -31,10 +41,12 @@ class Row {
             if ($column->isAutoIncremented()) {
                 continue;
             }
+            
             $this->_names[] = $column->_name;
             if (key_exists($column->_name, $referencedValues)) {
                 if ($column->isUnique() || $column->isPrimary()) {
-                    throw new \Exception("Sorry, but the column `" . $column->_name . "` have referenced unique column, so the system can't create row for this table without a new row in referenced tables.");
+                    throw new \Exception("Sorry, but the column `" . $column->_name . "` 
+                        have referenced unique column, so the system can't create row for this table without a new row in referenced tables.");
                 }
                 $this->_columnsInfo[$column->_name][self::TYPE] = self::REFERENCED_TYPE;
             } else {    
@@ -47,6 +59,8 @@ class Row {
                 $this->_columnsInfo[$column->_name][self::TYPE] = $type;
                 $this->_columnsInfo[$column->_name][self::MAX_LENGTH] = $column->getMaxLength();
                 $this->_columnsInfo[$column->_name][self::UNIQUE_OR_PRIMARY] = $column->isUnique() || $column->isPrimary();
+                
+                //initialize necessary types generators
                 $generatorClassName = __NAMESPACE__ . "\\Generator\\" . ucfirst($type) . "Generator";
                 if ( ! in_array($generatorClassName, $generatorsClassNames)) {
                     $generatorsClassNames[] = $generatorClassName;
@@ -55,7 +69,13 @@ class Row {
             }
         }
     }
-       
+     
+    /**
+     * Generate and insert rows to table
+     * 
+     * @param integer $amount
+     * @return boolean
+     */
     public function createRows($amount) {
         $rowCount = $result = 1;
         while ($rowCount <= $amount && $result) {
@@ -72,6 +92,10 @@ class Row {
         return $result;
     }
     
+    /**
+     * Generate values for one row
+     * @return string
+     */
     private function createRow() {
         foreach ($this->_columnsInfo as $key => $typeAndLengths) {
             switch ($typeAndLengths[self::TYPE]) {

@@ -2,12 +2,16 @@
 namespace Model\Generator;
 
 /**
- * Description of StringGenerator
+ * Generates random string values
  *
  * @author anastasia
  */
 class StringGenerator extends Generator {
     const MAX_POSSIBLE_LENGTH = 10000;
+    
+    /**
+     * {@inheritdoc}
+     */
     public function generate($maxLength = 0) {
         $charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 0123456789';
         $str = '';

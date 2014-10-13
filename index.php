@@ -4,7 +4,7 @@ use Model\SessionService;
 
 if ($_POST['action']) {
     $sessionService = new SessionService();
-    $sessionService->saveToSession(); 
+    $sessionService->saveDbParametersToSession(); 
     header("Location: /list.php");
     exit();
 }

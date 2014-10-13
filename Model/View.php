@@ -2,11 +2,17 @@
 namespace Model;
 use Model\Formatter\HtmlTableFormatter, Model\Repository\RowRepository, Model\Repository\TableRepository;
 /**
- * Description of ViewRepository
+ * Display necessary views
  *
  * @author Anastasiia
  */
 class View {
+    
+    /**
+     * Display tables general info with table columns general info and 'generate' and 'show detail' forms.
+     * @param string $tables
+     * @param Model\KeyReference $keyReference
+     */
     function displayTablesWithColumns($tables, $keyReference) {
         $tableFormatter = new HtmlTableFormatter(TableRepository::$columns);
         $tableRepository = new TableRepository;
@@ -16,7 +22,7 @@ class View {
            echo $table->getFormattedOtherFields();
            echo $this->displayTableRowsCount($table->getName(), $tableRepository);
            echo $keyReference->getFormattedReferencedForTables($table->getName());
-           echo $tableForm->getFormattedForm($table->getName());
+           echo $tableForm->getFormattedGeneratorForm($table->getName());
            $tableColumns = $tableRepository->getColumnsInformation($table->getName());
            $table->setColumns($tableColumns);
            array_map(function($column) use (&$tableFormatter) {
@@ -28,6 +34,11 @@ class View {
         }
     }
     
+    /**
+     * Generate rows view
+     * @return boolean
+     * @throws \Exception
+     */
     public function generate() {
         $tableName = $_POST['table'];
         $amount = $_POST['amount'];
@@ -37,7 +48,7 @@ class View {
         $tableRepository = new TableRepository;
         $table = $tableRepository->createTable($tableRepository->getTable($tableName));
         
-        if (!$table) {
+        if ( ! $table) {
             return;
         }    
         $tableColumns = $tableRepository->getColumnsInformation($table->getName());
@@ -52,6 +63,10 @@ class View {
         }
     }
     
+    /**
+     * Specific table details view
+     * @return type
+     */
     public function getDetail() {
         $tableRepository = new TableRepository();
         $tableName = $_POST['table'];
@@ -71,6 +86,12 @@ class View {
         }
     }
     
+    /**
+     * 
+     * @param string $tableName
+     * @param Model\Repository\TableRepository $tableRepository
+     * @return string
+     */
     public function displayTableRowsCount($tableName, $tableRepository) {
         $count = $tableRepository->getTableTotalRowsCount($tableName);
         return "Total rows count: " . $count[0];

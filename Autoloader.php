@@ -1,10 +1,9 @@
 <?php
 
-
 /**
- * Description of Autoloader
+ * Autoloader class
  *
- * @author Anastasiia
+ * @author anastasiia
  */
 class Autoloader {
     public static function autoload($className) {

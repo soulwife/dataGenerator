@@ -1,7 +1,7 @@
 <?php
 namespace Model;
 /**
- * Description of KeyReference
+ * Operate with referenced columns and tables
  *
  * @author anastasia
  */
@@ -13,6 +13,13 @@ class KeyReference {
     private $_referencedColumns = [];
     private $_referencedTables = [];
     
+    /**
+     * Get referencing table and column for specific table and column
+     * 
+     * @param string $table
+     * @param string $column
+     * @return array
+     */
     public function getReferencingForColumns($table, $column) {
         $result = $this->_referencedColumns[$table][$column];     
         
@@ -29,6 +36,12 @@ class KeyReference {
         return $result; 
     }
     
+    /**
+     * Get referenced tables and columns for table
+     * 
+     * @param string $table
+     * @return array
+     */
     private function getReferencedForTables($table) {
         $result = $this->_referencedTables[$table];     
         
@@ -45,6 +58,12 @@ class KeyReference {
         return $result; 
     }
     
+    /**
+     * Get referenced data as formatted string
+     * 
+     * @param string $table
+     * @return string
+     */
     public function getFormattedReferencedForTables($table) {
         $this->getReferencedForTables($table);
         if ( ! $this->_referencedTables[$table]) {
@@ -57,6 +76,12 @@ class KeyReference {
         return rtrim($informationString , ";") . "</h5>";
     }
     
+    /**
+     * Select random value from referencing columns
+     * 
+     * @param string $table
+     * @return mixed
+     */
     public function getReferencingColumnsValuesForTable($table) {
         $this->getReferencedForTables($table);
         if ( ! $this->_referencedTables[$table]) {

@@ -3,7 +3,7 @@ namespace Model;
 
 
 /**
- * Description of TypeMapper
+ * Map MySQL types to project specific
  *
  * @author anastasia
  */
@@ -18,6 +18,13 @@ class TypeMapper {
         /* TODO: 'blob' => ['TINYBLOB', 'MEDIUMBLOB', 'LONGBLOB', 'BLOB', 'BINARY', 'VARBINARY'] */
     ];
     static $mappedType = null;
+    
+    /**
+     * 
+     * @param string $type
+     * @return string
+     * @throws \InvalidArgumentException
+     */
     public static function convertType($type) {
         $convertedType = self::defineSpecificType(static::$typeList, $type);
         self::$mappedType = null;
@@ -28,6 +35,13 @@ class TypeMapper {
         return $convertedType;
     }
     
+    /**
+     * 
+     * @param array $definedTypes
+     * @param string $type
+     * @param string $typeName
+     * @return string
+     */
     public static function defineSpecificType($definedTypes, $type, $typeName = null) {
         if ( ! self::$mappedType) {
             foreach ($definedTypes as $currentKeyType => $definedType) {
@@ -45,21 +59,23 @@ class TypeMapper {
         return self::$mappedType;
     }
     
+    /**
+     * 
+     * @param string $type
+     * @return boolean
+     */
     public static function isNumeric($type) {
         return $type == 'integer';
     }
     
+     /**
+     * 
+     * @param string $type
+     * @return boolean
+     */
     public static function isEnum($type) {
        return $type == 'enum'; 
-    }
-    
-    public static function isDate($type) {
-        
-    }
-    
-    public static function isBinary($type) {
-        
-    }
+    }   
 }
 
 ?>

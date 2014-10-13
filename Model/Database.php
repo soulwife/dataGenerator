@@ -2,7 +2,7 @@
 namespace Model;
 use PDO;
 /**
- * Description of DatabaseConnection
+ * Specific singleton class for database connection
  *
  * @author Anastasiia
  */
@@ -12,6 +12,16 @@ class Database {
     private static $_connection;
     
     private function __construct() {}
+    
+    /**
+     * 
+     * @param string $dbHost
+     * @param string $dbName
+     * @param string $dbUser
+     * @param string $dbPass
+     * @return PDO
+     * @throws Exception
+     */
     private function setConnection($dbHost, $dbName, $dbUser, $dbPass) {
         try { 
             static::$_connection = new PDO('mysql:host=' . $dbHost . ';dbname=' . $dbName, $dbUser, $dbPass); 
@@ -24,6 +34,10 @@ class Database {
         return static::$_connection;
     }
     
+    /**
+     * 
+     * @return PDO
+     */
     final public static function getConnection() {
         if (empty(static::$_connection)) {
             $class = get_called_class();

@@ -1,13 +1,21 @@
 <?php
 namespace Model\Repository;
-use PDO, Model\Database;;
+use PDO, Model\Database;
 /**
- * Description of RowRepository
+ * Database repository for operating on rows level 
  *
  * @author anastasia
  */
 class RowRepository {
     const TRANSACTION_LIMIT = 100;
+    
+    /**
+     * Insert rows to table in transaction
+     * @param string $table
+     * @param string $names
+     * @param array $rowsValues
+     * @return boolean
+     */
     public function insert($table, $names, $rowsValues) {      
         try {
             Database::getConnection()->beginTransaction();
@@ -23,6 +31,12 @@ class RowRepository {
         }        
     }
     
+    /**
+     * Get specific column elements from table
+     * @param string $tableName
+     * @param string $columnName
+     * @return type
+     */
     public function getAlreadyUsedValues($tableName, $columnName) {
         $result = Database::getConnection()->query("SELECT `" . $columnName . "` FROM $tableName ");
         $values = $result->fetchAll() ? : [];

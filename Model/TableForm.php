@@ -2,13 +2,18 @@
 namespace Model;
 
 /**
- * Description of TableForm
+ * Create specific html forms for Table
  *
  * @author Anastasiia
  */
 class TableForm {
 
-    public function getFormattedForm($tableName) {
+    /**
+     * Render form for 'generate new values'
+     * @param string $tableName
+     * @return string
+     */
+    public function getFormattedGeneratorForm($tableName) {
         return '<form method="POST" class="form form-inline" action="/generate.php">'
                 . '<input class="form-control" type="text" size="6" name="amount" value="0" placeholder="1-100000" />'
                 . '<input type="hidden" name="table" value="' . $tableName . '" />'
@@ -16,6 +21,11 @@ class TableForm {
                 . '</form>';
     }
     
+    /**
+     * Render form with 'go to detail page' button
+     * @param string $tableName
+     * @return string
+     */
     public function getShowDetailsForm($tableName) {
         return '<form method="POST" action="/detail.php">'
         . '<input type="hidden" name="table" value="' . $tableName . '" />'

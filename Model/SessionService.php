@@ -2,7 +2,7 @@
 namespace Model;
 
 /**
- * Description of SessionService
+ * Operate with sessions
  *
  * @author Anastasiia
  */
@@ -12,7 +12,10 @@ class SessionService {
         session_start();
     }
     
-    public function saveToSession() {
+    /**
+     * Save db parameters to session
+     */
+    public function saveDbParametersToSession() {
         $dbHost = 'dbHost';
         $dbName = 'dbName';
         $dbUser = 'dbUser';
@@ -25,6 +28,10 @@ class SessionService {
         }
     }
     
+    /**
+     * Check if there is an active session
+     * @return int
+     */
     function checkSession() {
         $status = session_status();
         if($status == PHP_SESSION_DISABLED) {
