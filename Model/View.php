@@ -37,7 +37,6 @@ class View {
     /**
      * Generate rows view
      * @return boolean
-     * @throws \Exception
      */
     public function generate() {
         $tableName = $_POST['table'];
@@ -59,7 +58,7 @@ class View {
             $rowGenerator = new Row($tableName, $tableColumns, $repository, $referencedValues);
             return $rowGenerator->createRows($amount);
         } else {
-            throw new \Exception("Sorry, but the table " . $table . "have the referenced columns in other table(s), but it(their) is empty now, please generate row(s) for it(them) firstly.");
+            echo "Sorry, but the table " . $table->getName() . "have the referenced columns in other table(s), but it(their) is empty now, please generate row(s) for it(them) firstly.";
         }
     }
     
